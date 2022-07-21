@@ -3,12 +3,10 @@ package com.makhsodur.springdemo.rest;
 import java.util.List;
 
 import com.makhsodur.springdemo.entity.Customer;
+import com.makhsodur.springdemo.exceptions.CustomersNotFoundException;
 import com.makhsodur.springdemo.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -34,10 +32,17 @@ public class CustomerRestController {
 		Customer theCustomer = customerService.getCustomer(customerId);
 		
 		if (theCustomer == null) {
-			throw new CustomerNotFoundException("Customer id not found - " + customerId);
+			throw new CustomersNotFoundException("Customer id not found - " + customerId);
 		}
 		
 		return theCustomer;
+	}
+
+	@PostMapping("/customers")
+	public Customer addCustomer(@RequestBody Customer theCustomer){
+		theCustomer.setId(0);
+		 customerService.saveCustomer(theCustomer);
+		 return theCustomer;
 	}
 		
 	
